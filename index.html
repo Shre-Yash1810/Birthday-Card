@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday Didi 💖</title>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+body {
+  background: linear-gradient(135deg, #ffe6f0, #fff5fb);
+}
+
+/* BALLOONS */
+.balloon {
+  position: absolute;
+  width: 60px;
+  height: 80px;
+  background: radial-gradient(circle at 30% 30%, #ffd1e8, #ff7eb9);
+  border-radius: 50% 50% 45% 45%;
+  animation: float 12s linear infinite;
+  opacity: 0.9;
+}
+.balloon::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 40px;
+  background: #bbb;
+  bottom: -40px;
+  left: 50%;
+}
+@keyframes float {
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-120vh); }
+}
+
+/* PETALS */
+.petal {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle, #ffd6ec, #ff8fc4);
+  border-radius: 50% 50% 40% 40%;
+  opacity: 0.8;
+  animation: fall 10s linear infinite;
+}
+@keyframes fall {
+  from { transform: translateY(-10vh) rotate(0deg); }
+  to { transform: translateY(110vh) rotate(360deg); }
+}
+
+/* STORY */
+#story {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  text-align: center;
+  font-size: 60px;
+  padding: 0 20px;
+  color: #ff5fa2;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+/* GIFT */
+#gift {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 150px;
+  cursor: pointer;
+  animation: bounce 1.2s infinite;
+  display: none;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-20px); }
+}
+
+/* GIFT MESSAGE */
+#giftMessage {
+  position: absolute;
+  bottom: 5%;
+  width: 100%;
+  text-align: center;
+  font-size: 50px;
+  color: #555;
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="story"></div>
+<div id="gift">🎁</div>
+<div id="giftMessage"></div>
+
+<script>
+/* STORY */
+const lines = [
+  { text: " 🎉 Shakshiiiii it's your birthday! 🎉", time: 3000 },
+  { text: "Hey… I made this just for you 💖", time: 3000 },
+  { text: "🎉 HAPPIEST BIRTHDAY DIDI 🎉", time: 3000 },
+  { text: "Yes, you are officially 21 now 😌", time: 3000 },
+  { text: "So be a good bestie and stop shipping me with guys 😂", time: 3000 },
+  { text: "Find me a girlfriend instead!", time: 3000 },
+  { text: "Just kidding… or am I? 🤔", time: 3000 },
+  { text: "Okay okay… jokes aside.", time: 3000 },
+  { text: "I want to tell you that you are the best thing that has ever happened to me ❤️",time: 3000 }, 
+  { text: "You always listen to my childish never ending problems and never get bored. 💖", time: 3000 },
+  { text: "You always support me no matter what I do, even when I’m wrong.", time: 3000 },
+  {text: "I don’t care about others, just you stay with me forever — that’s all I wish. ❤️ Don’t leave bitch or I’ll kill ya 😆", time: 3000 },
+
+  { text: "One last thing…", time: 3000 }
+];
+
+let i = 0;
+const story = document.getElementById("story");
+
+function showLine() {
+  if (i < lines.length) {
+    story.innerText = lines[i].text;
+    story.style.opacity = 1;
+
+    setTimeout(() => {
+      story.style.opacity = 0;
+      i++;
+      setTimeout(showLine, 1500);
+    }, lines[i].time);
+  } else {
+    document.getElementById("gift").style.display = "block";
+  }
+}
+setTimeout(showLine, 1000);
+
+/* GIFT PRANK */
+let prank = 0;
+const gift = document.getElementById("gift");
+const msg = document.getElementById("giftMessage");
+
+gift.onclick = () => {
+  prank++;
+
+  if (prank < 4) {
+    gift.style.left = Math.random() * 80 + "vw";
+    gift.style.top = Math.random() * 60 + "vh";
+    gift.style.bottom = "auto";
+    msg.style.display = "block";
+    msg.innerText = "Ohh? You want the gift that bad huh? 😏";
+  } else {
+    gift.innerText = "🖕";
+    msg.innerHTML = "Not here 😌<br>Your real gift comes tomorrow… wait, birthday girl 💕";
+  }
+};
+
+/* BALLOONS */
+for (let i=0;i<15;i++){
+  const b = document.createElement("div");
+  b.className = "balloon";
+  b.style.left = Math.random()*100+"vw";
+  b.style.animationDelay = Math.random()*10+"s";
+  document.body.appendChild(b);
+}
+
+/* PETALS */
+for (let i=0;i<40;i++){
+  const p = document.createElement("div");
+  p.className = "petal";
+  p.style.left = Math.random()*100+"vw";
+  p.style.animationDelay = Math.random()*10+"s";
+  p.style.animationDuration = (Math.random()*5+8)+"s";
+  document.body.appendChild(p);
+}
+</script>
+
+</body>
+</html>
