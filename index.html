@@ -8,179 +8,282 @@
 html, body {
   margin: 0;
   height: 100%;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Georgia", serif;
   overflow: hidden;
-}
-
-body {
   background: linear-gradient(135deg, #ffe6f0, #fff5fb);
 }
 
-/* BALLOONS */
+/* BACKGROUND */
+.balloon, .petal { position:absolute; pointer-events:none; }
 .balloon {
-  position: absolute;
-  width: 60px;
-  height: 80px;
-  background: radial-gradient(circle at 30% 30%, #ffd1e8, #ff7eb9);
-  border-radius: 50% 50% 45% 45%;
-  animation: float 12s linear infinite;
-  opacity: 0.9;
+  width:60px;height:80px;
+  background:radial-gradient(circle at 30% 30%, #ffd1e8, #ff7eb9);
+  border-radius:50% 50% 45% 45%;
+  animation:float 12s linear infinite;
 }
 .balloon::after {
-  content: "";
-  position: absolute;
-  width: 2px;
-  height: 40px;
-  background: #bbb;
-  bottom: -40px;
-  left: 50%;
+  content:"";width:2px;height:40px;background:#bbb;
+  position:absolute;bottom:-40px;left:50%;
 }
-@keyframes float {
-  from { transform: translateY(110vh); }
-  to { transform: translateY(-120vh); }
-}
+@keyframes float { from{transform:translateY(110vh)} to{transform:translateY(-120vh)} }
 
-/* PETALS */
 .petal {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background: radial-gradient(circle, #ffd6ec, #ff8fc4);
-  border-radius: 50% 50% 40% 40%;
-  opacity: 0.8;
-  animation: fall 10s linear infinite;
+  width:18px;height:18px;
+  background:radial-gradient(circle,#ffd6ec,#ff8fc4);
+  border-radius:50% 50% 40% 40%;
+  animation:fall 10s linear infinite;
 }
 @keyframes fall {
-  from { transform: translateY(-10vh) rotate(0deg); }
-  to { transform: translateY(110vh) rotate(360deg); }
+  from{transform:translateY(-10vh) rotate(0)}
+  to{transform:translateY(110vh) rotate(360deg)}
 }
 
-/* STORY */
-#story {
-  position: absolute;
-  top: 40%;
-  width: 100%;
-  text-align: center;
-  font-size: 80px;
-  padding: 0 20px;
-  color: #ff5fa2;
-  opacity: 0;
-  transition: opacity 1s;
+/* BOOK */
+#bookStage {
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
+
+.book {
+  width:700px;
+  height:420px;
+  perspective:2000px;
+  position:relative;
+}
+
+.page {
+  position:absolute;
+  width:100%;
+  height:100%;
+  background-image: url(back.png);
+  background-position:center;
+  background-size:cover;
+  border-radius:12px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+  transform-origin:left;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-size:36px;
+  color:ghostwhite;
+  padding:40px;
+  opacity:0;
+}
+
+.page.active { animation:flipIn 1.2s ease forwards; }
+.page.flipOut { animation:flipOut 1.2s ease forwards; }
+
+@keyframes flipIn {
+  from { transform:rotateY(-90deg); opacity:0; }
+  to { transform:rotateY(0); opacity:1; }
+}
+@keyframes flipOut {
+  from { transform:rotateY(0); opacity:1; }
+  to { transform:rotateY(90deg); opacity:0; }
+}
+
+/* STAGES */
+.stage {
+  position:absolute;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
+/* IMAGES */
+.stage img {
+  height:720px;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.2);
+  animation:floatSoft 3s infinite;
+  cursor:pointer;
+}
+
+@keyframes floatSoft {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-20px)}
+}
+
+/* CAKE CUT */
+#cake { font-size:160px; cursor:pointer; }
+#knife { font-size:80px; opacity:0; transition:0.3s; }
+
+/* PLATE */
+#plate { font-size:140px; animation:pop 0.6s ease; }
+@keyframes pop { from{transform:scale(0)} to{transform:scale(1)} }
 
 /* GIFT */
 #gift {
-  position: absolute;
-  bottom: 15%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 150px;
-  cursor: pointer;
-  animation: bounce 1.2s infinite;
-  display: none;
+  font-size:150px;
+  cursor:pointer;
+  position:absolute;
+  animation:bounce 1.2s infinite;
 }
-
 @keyframes bounce {
-  0%,100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-20px); }
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-20px)}
 }
-
-/* GIFT MESSAGE */
-#giftMessage {
-  position: absolute;
-  bottom: 5%;
-  width: 100%;
-  text-align: center;
-  font-size: 50px;
-  color: #555;
-  display: none;
+#giftMsg {
+  margin-top:20px;
+  font-size:40px;
+  color:#555;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<div id="story"></div>
-<div id="gift">🎁</div>
-<div id="giftMessage"></div>
+<!-- BOOK -->
+<div id="bookStage">
+  <div class="book" id="book"></div>
+</div>
+
+<!-- DRESS -->
+<div id="dressStage" class="stage">
+  <img id="dressImg" src="red_dress.png">
+  <div style="font-size:40px;color:#ff5fa2;margin-top:20px;text-align:center">
+    here's the dress you wanted to wear for cake cutting (click on it)
+  </div>
+</div>
+
+<!-- CAKE INTRO -->
+<div id="cakeIntroStage" class="stage">
+  <img src="blood_cake.png">
+  <div style="font-size:40px;color:#ff5fa2;margin-top:20px">
+    Here's your cake 
+  </div>
+</div>
+
+<!-- CAKE CUT -->
+<div id="cakeStage" class="stage">
+  <div style="font-size:44px;color:#ff5fa2">🎉 Happy Birthday Shakshi 🎉</div>
+  <div id="cake">🎂</div>
+  <div id="knife">🔪</div>
+  <div style="font-size:34px;color:#ff5fa2">Cut the cake properly 😌</div>
+</div>
+
+<!-- PLATE -->
+<div id="plateStage" class="stage">
+  <div id="plate">🍰</div>
+  <div style="font-size:36px;color:#ff5fa2">For you 💕</div>
+  <div style="font-size:36px;color:#ff5fa2">And one last thing...</div>
+</div>
+
+<!-- GIFT -->
+<div id="giftStage" class="stage">
+  <div id="gift">🎁</div>
+  <div id="giftMsg"></div>
+</div>
 
 <script>
-/* STORY */
-const lines = [
-  { text: " 🎉 Shakshiiiii it's your birthday! 🎉", time: 3000 },
-  { text: "Hey… I made this just for you 💖", time: 3000 },
-  { text: "🎉 HAPPIEST BIRTHDAY DIDI 🎉", time: 3000 },
-  { text: "Yes, you are officially 21 now 😌", time: 3000 },
-  { text: "So be a good bestie and stop shipping me with guys 😂", time: 3000 },
-  { text: "Find me a girlfriend instead!", time: 3000 },
-  { text: "Just kidding… or am I? 🤔", time: 3000 },
-  { text: "Okay okay… jokes aside.", time: 3000 },
-  { text: "I want to tell you that you are the best thing that has ever happened to me ❤️",time: 3000 }, 
-  { text: "You always listen to my childish never ending problems and never get bored. 💖", time: 3000 },
-  { text: "You always support me no matter what I do, even when I’m wrong.", time: 3000 },
-  {text: "I don’t care about others, just you stay with me forever — that’s all I wish. ❤️ Don’t leave bitch or I’ll kill ya 😆", time: 3000 },
-
-  { text: "One last thing…", time: 3000 }
+/* STORYBOOK */
+const pages = [
+  "🎉 Shakshiiiii it's your birthday! 🎉",
+  "Hey… I made this just for you 💖",
+  "Ahem ahem, Give me the mic, its time for my speech 😌",
+  "🎉 Happiest Birthday Didi 🎉",
+  "💖Lots of love from your poor little stupid pathetic bitch of a meow meow💖",
+  "Yes, you are officially 21 now 😌",
+  "So be a good sister and Stop shipping me with guys 😂",
+  "Find me a Girlfriend instead 😏",
+  "just kidding , or am I? 🤭",
+  "Okay okay… jokes aside.",
+  "You are the best thing that has ever happened to me ❤️",
+  "You always listen to my childish never ending problems and never judge me💖",
+  "You’re my safest place where i can be weak without hesitating❤️",
+  "I don’t care about others, just you stay with me forever — that’s all I wish. ❤️ Don’t leave bitch or I’ll kill ya 😆",
+  "Alright , i won't make you bored with my emotional speech 😅",
+  "Let’s celebrate now 🎉"
 ];
 
-let i = 0;
-const story = document.getElementById("story");
+const book = document.getElementById("book");
+let index = 0, currentPage = null;
 
-function showLine() {
-  if (i < lines.length) {
-    story.innerText = lines[i].text;
-    story.style.opacity = 1;
-
-    setTimeout(() => {
-      story.style.opacity = 0;
-      i++;
-      setTimeout(showLine, 1500);
-    }, lines[i].time);
+function nextPage() {
+  if (currentPage) currentPage.classList.add("flipOut");
+  if (index < pages.length) {
+    const page = document.createElement("div");
+    page.className = "page active";
+    page.innerText = pages[index++];
+    book.appendChild(page);
+    currentPage = page;
+    setTimeout(nextPage, 4000);
   } else {
-    document.getElementById("gift").style.display = "block";
+    setTimeout(() => {
+      bookStage.style.display = "none";
+      dressStage.style.display = "flex";
+    }, 1200);
   }
 }
-setTimeout(showLine, 1000);
+nextPage();
 
-/* GIFT PRANK */
-let prank = 0;
-const gift = document.getElementById("gift");
-const msg = document.getElementById("giftMessage");
+/* DRESS → CAKE INTRO */
+dressImg.onclick = () => {
+  dressStage.style.display = "none";
+  cakeIntroStage.style.display = "flex";
+  setTimeout(() => {
+    cakeIntroStage.style.display = "none";
+    cakeStage.style.display = "flex";
+  }, 2500);
+};
 
-gift.onclick = () => {
-  prank++;
-
-  if (prank < 4) {
-    gift.style.left = Math.random() * 80 + "vw";
-    gift.style.top = Math.random() * 60 + "vh";
-    gift.style.bottom = "auto";
-    msg.style.display = "block";
-    msg.innerText = "Ohh? You want the gift that bad huh? 😏";
-  } else {
-    gift.innerText = "🖕";
-    msg.innerHTML = "Not here 😌<br>Your real gift comes tomorrow… wait, birthday girl 💕";
+/* CAKE CUT */
+let cuts = 0;
+cake.onclick = () => {
+  cuts++;
+  knife.style.opacity = 1;
+  knife.style.transform = `rotate(${cuts * 35}deg)`;
+  if (cuts === 3) {
+    cake.innerText = "🍰";
+    setTimeout(() => {
+      cakeStage.style.display = "none";
+      plateStage.style.display = "flex";
+      setTimeout(() => {
+        plateStage.style.display = "none";
+        giftStage.style.display = "flex";
+      }, 2000);
+    }, 700);
   }
 };
 
-/* BALLOONS */
+/* GIFT PRANK */
+let prank = 0;
+gift.onclick = () => {
+  prank++;
+  if (prank < 4) {
+    gift.style.left = Math.random()*80 + "vw";
+    gift.style.top = Math.random()*70 + "vh";
+    giftMsg.innerText = "Ohh? You want it that bad huh? 😏";
+  } else {
+    gift.innerText = "🖕";
+    giftMsg.innerHTML = "Not here 😌<br>Real gift comes tomorrow… 💕";
+  }
+};
+
+/* BACKGROUND */
 for (let i=0;i<15;i++){
-  const b = document.createElement("div");
-  b.className = "balloon";
-  b.style.left = Math.random()*100+"vw";
-  b.style.animationDelay = Math.random()*10+"s";
+  let b=document.createElement("div");
+  b.className="balloon";
+  b.style.left=Math.random()*100+"vw";
+  b.style.animationDelay=Math.random()*10+"s";
   document.body.appendChild(b);
 }
-
-/* PETALS */
 for (let i=0;i<40;i++){
-  const p = document.createElement("div");
-  p.className = "petal";
-  p.style.left = Math.random()*100+"vw";
-  p.style.animationDelay = Math.random()*10+"s";
-  p.style.animationDuration = (Math.random()*5+8)+"s";
+  let p=document.createElement("div");
+  p.className="petal";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDelay=Math.random()*10+"s";
   document.body.appendChild(p);
 }
 </script>
 
 </body>
 </html>
+
